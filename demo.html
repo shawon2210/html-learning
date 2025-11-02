@@ -10,6 +10,7 @@
       .center-heading {
         text-align: center;
         margin: 20px 0;
+        
       }
       .paragraph {
         text-align: center;
@@ -21,9 +22,32 @@
         padding: 10px 20px;
         text-align: center;
       }
+      .flex-container {
+     display: flex;          /* activates flex context */
+     gap: 10px;
+     justify-content: space-around;
+     align-items: center;
+     height: 150px;
+     background-color: #eee;
+     }
+
+    .box {
+      background-color: lightcoral;
+      padding: 20px;
+      border: 2px solid maroon;
+      width: 100px;
+      text-align: center;}
+
     </style>
   </head>
   <body>
+
+
+    <div class="flex-container">
+    <div class="box">Box 1</div>
+    <div class="box">Box 2</div>
+    <div class="box">Box 3</div>
+    </div>
     <h1 class="center-heading">Toggle Image Visibility test</h1>
     <p class="paragraph">Click the button to show/hide the image</p>
     <button id="toggleBtn" aria-pressed="false" class="center-button">Show</button>

@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Modern :focus Example</title>
+<style>
+  /* General styling */
+  * {
+    box-sizing: border-box;
+    font-family: "Poppins", "Segoe UI", sans-serif;
+  }
+
+  body {
+    background: linear-gradient(135deg, #74ebd5, #acb6e5);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: #2c3e50;
+    margin: 0;
+  }
+
+  h2 {
+    font-size: 2rem;
+    margin-bottom: 10px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  p {
+    font-size: 1.1rem;
+    margin-bottom: 30px;
+    color: #34495e;
+  }
+
+  /* Form styling */
+  form {
+    background: #fff;
+    padding: 40px 50px;
+    border-radius: 15px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+    width: 350px;
+    transition: all 0.3s ease;
+    text-align: left;
+  }
+
+  label {
+    font-weight: 600;
+    display: block;
+    margin-bottom: 8px;
+    color: #333;
+  }
+
+  input[type="text"] {
+    width: 100%;
+    padding: 10px 15px;
+    margin-bottom: 20px;
+    border: 2px solid #ccc;
+    border-radius: 8px;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    outline: none;
+    background-color: #f9f9f9;
+  }
+
+  /* Focus effect with animation and glow */
+  input[type="text"]:focus {
+    background-color: #fffbe6;
+    border-color: #6a11cb;
+    box-shadow: 0 0 8px rgba(106, 17, 203, 0.5);
+    transform: scale(1.03);
+  }
+
+  /* Submit button styling */
+  input[type="submit"] {
+    background: linear-gradient(135deg, #6a11cb, #2575fc);
+    border: none;
+    color: white;
+    padding: 12px 20px;
+    border-radius: 8px;
+    font-size: 1rem;
+    cursor: pointer;
+    width: 100%;
+    transition: all 0.3s ease;
+  }
+
+  input[type="submit"]:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+  }
+
+  /* Add soft 3D floating animation for form */
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-5px); }
+  }
+
+  form {
+    animation: float 4s ease-in-out infinite;
+  }
+</style>
+</head>
+<body>
+
+<h2>Using :focus</h2>
+<p>Focus on the input fields to see the animation and glow effect.</p>
+
+<form action="#" method="get">
+  <label for="fname">First name:</label>
+  <input type="text" id="fname" name="fname" placeholder="Enter your first name">
+
+  <label for="lname">Last name:</label>
+  <input type="text" id="lname" name="lname" placeholder="Enter your last name">
+
+  <input type="submit" value="Submit">
+</form>
+
+</body>
+</html>

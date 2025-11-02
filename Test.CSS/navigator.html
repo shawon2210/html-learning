@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Practice Sidebar — Modern Layout</title>
+
+<!-- Font Awesome for icons -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+
+<style>
+  :root{
+    --sidebar-width: 260px;
+    --sidebar-collapsed: 84px;
+    --glass: rgba(255,255,255,0.10);
+    --glass-strong: rgba(255,255,255,0.18);
+    --accent: #ffdd57;
+    --accent-2: #6a11cb;
+    --bg-grad-1: #111827;
+    --bg-grad-2: #2b1055;
+    --text-on-dark: #eef2ff;
+    --muted: rgba(255,255,255,0.7);
+    --card-bg: rgba(255,255,255,0.04);
+    --radius: 14px;
+    --shadow-1: 0 10px 30px rgba(2,6,23,0.6);
+  }
+
+  /* Base reset */
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  body{
+    margin:0;
+    font-family: "Poppins", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+    color:var(--text-on-dark);
+    background: linear-gradient(180deg, var(--bg-grad-1), var(--bg-grad-2));
+    -webkit-font-smoothing:antialiased;
+    -moz-osx-font-smoothing:grayscale;
+    display:flex;
+    min-height:100vh;
+    gap:24px;
+  }
+
+  /* Sidebar */
+  .sidebar {
+    width:var(--sidebar-width);
+    min-width:var(--sidebar-collapsed);
+    background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.02));
+    backdrop-filter: blur(12px) saturate(120%);
+    border-right: 1px solid rgba(255,255,255,0.04);
+    box-shadow: var(--shadow-1);
+    padding:18px;
+    display:flex;
+    flex-direction:column;
+    gap:14px;
+    transition: width .36s cubic-bezier(.2,.9,.3,1), padding .36s;
+    position:relative;
+  }
+
+  .sidebar.collapsed{
+    width:var(--sidebar-collapsed);
+    padding:12px 10px;
+  }
+
+  /* Top area: logo + collapse control */
+  .top {
+    display:flex;
+    align-items:center;
+    gap:12px;
+  }
+
+  .brand {
+    display:flex;
+    gap:12px;
+    align-items:center;
+  }
+
+  .logo {
+    width:44px;
+    height:44px;
+    border-radius:10px;
+    background: linear-gradient(135deg,var(--accent-2),#2575fc);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-weight:700;
+    color:white;
+    box-shadow: 0 6px 18px rgba(37,117,252,0.16);
+    flex-shrink:0;
+  }
+
+  .brand-name{
+    display:flex;
+    flex-direction:column;
+    line-height:1;
+  }
+
+  .brand-name .title{
+    font-weight:600;
+    color:var(--text-on-dark);
+    font-size:0.95rem;
+  }
+  .brand-name .subtitle{
+    color:var(--muted);
+    font-size:0.78rem;
+  }
+
+  /* When collapsed, hide brand text */
+  .sidebar.collapsed .brand-name{display:none}
+
+  .toggle {
+    margin-left:auto;
+    background:var(--accent);
+    color:#111;
+    width:40px;
+    height:40px;
+    border-radius:50%;
+    display:grid;
+    place-items:center;
+    box-shadow: 0 6px 18px rgba(255,221,87,0.18);
+    cursor:pointer;
+    border:none;
+    transition:transform .28s;
+  }
+
+  .toggle:active{transform:scale(.96)}
+
+  /* Nav list */
+  nav{margin-top:6px; display:flex; flex-direction:column; gap:6px; padding-bottom:10px; flex:1; overflow:auto}
+  nav a{
+    display:flex;
+    align-items:center;
+    gap:14px;
+    padding:12px 12px;
+    border-radius:10px;
+    color:var(--text-on-dark);
+    text-decoration:none;
+    transition:all .26s cubic-bezier(.2,.9,.3,1);
+    position:relative;
+  }
+  nav a .icon{
+    width:36px;height:36px;border-radius:8px;
+    display:grid;place-items:center;
+    background: linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.02));
+    box-shadow: 0 6px 18px rgba(2,6,23,0.45) inset;
+    flex-shrink:0;
+    font-size:16px;
+  }
+  nav a span.label{font-weight:600}
+  nav a span.small{font-size:.85rem;color:var(--muted);font-weight:500}
+
+  nav a:hover{
+    transform:translateX(8px);
+    background: linear-gradient(90deg, rgba(255,255,255,0.03), rgba(255,255,255,0.02));
+    box-shadow: 0 8px 22px rgba(0,0,0,0.35);
+  }
+
+  /* active indicator bar left */
+  nav a.active{
+    background: linear-gradient(90deg, rgba(255,221,87,0.08), rgba(255,255,255,0.02));
+    box-shadow: 0 10px 26px rgba(0,0,0,0.45);
+  }
+  nav a.active::before{
+    content:"";
+    position:absolute;
+    left:8px; top:8px; bottom:8px;
+    width:4px;
+    background:linear-gradient(180deg,var(--accent),#ffd86f);
+    border-radius:6px;
+  }
+
+  /* collapse behavior: hide text, show tooltip */
+  .sidebar.collapsed nav a span.label{display:none}
+  .sidebar.collapsed nav a span.small{display:none}
+
+  .sidebar.collapsed nav a::after{
+    content:attr(data-tooltip);
+    position:absolute;
+    left:calc(var(--sidebar-collapsed) + 12px);
+    top:50%;
+    transform:translateY(-50%);
+    background:rgba(0,0,0,0.72);
+    color:white;
+    padding:6px 10px;
+    border-radius:8px;
+    font-size:.85rem;
+    opacity:0;
+    pointer-events:none;
+    transition:opacity .18s;
+    white-space:nowrap;
+  }
+  .sidebar.collapsed nav a:hover::after{opacity:1}
+
+  /* bottom quick actions */
+  .quick {
+    display:flex;
+    gap:10px;
+    justify-content:space-between;
+    align-items:center;
+    margin-top:auto;
+  }
+  .quick button{
+    background:transparent;
+    border:1px solid rgba(255,255,255,0.06);
+    padding:8px 10px;
+    border-radius:8px;
+    color:var(--text-on-dark);
+    cursor:pointer;
+  }
+  .sidebar.collapsed .quick button span{display:none}
+
+  /* Main content area */
+  .main{
+    flex:1;
+    padding:28px;
+    display:flex;
+    flex-direction:column;
+    gap:18px;
+    overflow:auto;
+  }
+
+  header.main-header{
+    display:flex;
+    align-items:center;
+    gap:18px;
+    justify-content:space-between;
+  }
+  .search {
+    display:flex;
+    gap:12px;
+    align-items:center;
+    background:var(--card-bg);
+    padding:10px 12px;
+    border-radius:12px;
+    border:1px solid rgba(255,255,255,0.03);
+    min-width:240px;
+  }
+  .search input{
+    background:transparent;
+    border:0;
+    outline:0;
+    color:var(--text-on-dark);
+    font-size:0.95rem;
+    width:100%;
+  }
+
+  .cards{
+    display:grid;
+    grid-template-columns: repeat(auto-fit,minmax(240px,1fr));
+    gap:18px;
+    margin-top:6px;
+  }
+
+  .card{
+    background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+    border-radius:12px;
+    padding:18px;
+    box-shadow: 0 8px 28px rgba(0,0,0,0.45);
+    border:1px solid rgba(255,255,255,0.03);
+    transition:transform .28s, box-shadow .28s;
+  }
+  .card:hover{ transform:translateY(-8px); box-shadow:0 18px 40px rgba(0,0,0,0.55) }
+
+  .card h3{ margin:0 0 8px; font-size:1.05rem;}
+  .card p{ margin:0; color:var(--muted) }
+
+  /* responsive: make sidebar overlay on small screens */
+  @media (max-width:900px){
+    .sidebar{
+      position:fixed; left:0; top:0; bottom:0; z-index:40;
+      transform:translateX(-10%);
+      transition:transform .32s;
+    }
+    .sidebar.show{ transform:translateX(0) }
+    body.overlay::after{
+      content:""; position:fixed; inset:0; background:rgba(0,0,0,0.45); z-index:30;
+    }
+    .main{ padding:18px }
+  }
+
+  /* small screens: hide brand text always */
+  @media (max-width:420px){
+    .brand-name{display:none}
+  }
+
+  /* tiny utility */
+  .muted{color:var(--muted); font-size:.9rem}
+  a.icon-only{display:inline-grid; place-items:center; width:44px; height:44px; border-radius:8px}
+</style>
+</head>
+<body>
+
+  <!-- Sidebar -->
+  <aside id="sidebar" class="sidebar" aria-expanded="true" role="navigation" aria-label="Main sidebar">
+    <div class="top">
+      <div class="brand" aria-hidden="true">
+        <div class="logo"><i class="fa-solid fa-layer-group"></i></div>
+        <div class="brand-name">
+          <div class="title">Practice</div>
+          <div class="subtitle muted">Dashboard</div>
+        </div>
+      </div>
+
+      <button id="toggleBtn" class="toggle" aria-label="Collapse sidebar" title="Collapse sidebar">
+        <i id="toggleIcon" class="fa-solid fa-angle-left"></i>
+      </button>
+    </div>
+
+    <nav>
+      <a href="#home" class="active" data-tooltip="Home">
+        <div class="icon"><i class="fa-solid fa-house"></i></div>
+        <div>
+          <div class="label">Home</div>
+          <div class="small muted">Overview & stats</div>
+        </div>
+      </a>
+
+      <a href="#projects" data-tooltip="Projects">
+        <div class="icon"><i class="fa-solid fa-diagram-project"></i></div>
+        <div>
+          <div class="label">Projects</div>
+          <div class="small muted">Active tasks</div>
+        </div>
+      </a>
+
+      <a href="#messages" data-tooltip="Messages">
+        <div class="icon"><i class="fa-solid fa-message"></i></div>
+        <div>
+          <div class="label">Messages</div>
+          <div class="small muted">Inbox & chat</div>
+        </div>
+      </a>
+
+      <a href="#calendar" data-tooltip="Calendar">
+        <div class="icon"><i class="fa-solid fa-calendar-days"></i></div>
+        <div>
+          <div class="label">Calendar</div>
+          <div class="small muted">Events & schedule</div>
+        </div>
+      </a>
+
+      <a href="#settings" data-tooltip="Settings">
+        <div class="icon"><i class="fa-solid fa-gear"></i></div>
+        <div>
+          <div class="label">Settings</div>
+          <div class="small muted">Preferences</div>
+        </div>
+      </a>
+    </nav>
+
+    <div class="quick" aria-hidden="true">
+      <button title="Add new"><i class="fa-solid fa-plus"></i> <span>New</span></button>
+      <button title="Help"><i class="fa-solid fa-circle-question"></i> <span>Help</span></button>
+    </div>
+  </aside>
+
+  <!-- Main content -->
+  <main class="main" id="main">
+    <header class="main-header" role="banner">
+      <div style="display:flex;align-items:center;gap:18px;">
+        <button id="mobileToggle" class="icon-only" aria-label="Open menu" title="Open menu" style="display:none;">
+          <i class="fa-solid fa-bars"></i>
+        </button>
+
+        <div>
+          <h1 style="margin:0;font-size:1.2rem">Welcome back, Designer</h1>
+          <div class="muted">Here's what's happening today</div>
+        </div>
+      </div>
+
+      <div style="display:flex;align-items:center;gap:12px">
+        <div class="search" role="search">
+          <i class="fa-solid fa-magnifying-glass" style="opacity:.8"></i>
+          <input id="searchInput" placeholder="Search projects, messages..." aria-label="Search">
+        </div>
+        <div style="display:flex;align-items:center;gap:12px">
+          <button class="icon-only" title="Notifications" aria-label="Notifications"><i class="fa-regular fa-bell"></i></button>
+          <button class="icon-only" title="Profile" aria-label="Profile"><i class="fa-regular fa-user"></i></button>
+        </div>
+      </div>
+    </header>
+
+    <section class="cards" aria-live="polite">
+      <article class="card">
+        <h3>Weekly Active Users</h3>
+        <p class="muted">Users this week: <strong>5,482</strong></p>
+      </article>
+
+      <article class="card">
+        <h3>New Projects</h3>
+        <p class="muted">Projects created: <strong>18</strong></p>
+      </article>
+
+      <article class="card">
+        <h3>Unread Messages</h3>
+        <p class="muted">New messages: <strong>7</strong></p>
+      </article>
+
+      <article class="card">
+        <h3>Next Event</h3>
+        <p class="muted">Product review meeting — 3:00 PM</p>
+      </article>
+    </section>
+
+    <section style="margin-top:12px">
+      <div class="card">
+        <h3>Quick Notes</h3>
+        <p class="muted">This layout demonstrates a complete, accessible, responsive sidebar + content pattern. Collapse the sidebar to see the compact view or open it on mobile as an overlay.</p>
+      </div>
+    </section>
+  </main>
+
+<script>
+  // Elements
+  const sidebar = document.getElementById('sidebar');
+  const toggleBtn = document.getElementById('toggleBtn');
+  const toggleIcon = document.getElementById('toggleIcon');
+  const mobileToggle = document.getElementById('mobileToggle');
+
+  // Initialize state from localStorage
+  const collapsedKey = 'sidebarCollapsed';
+  const collapsed = localStorage.getItem(collapsedKey) === 'true';
+  if(collapsed){
+    sidebar.classList.add('collapsed');
+    sidebar.setAttribute('aria-expanded','false');
+    toggleIcon.classList.replace('fa-angle-left','fa-angle-right');
+  }
+
+  // Toggle function
+  function setCollapsed(state){
+    if(state){
+      sidebar.classList.add('collapsed');
+      sidebar.setAttribute('aria-expanded','false');
+      toggleIcon.classList.replace('fa-angle-left','fa-angle-right');
+      localStorage.setItem(collapsedKey,'true');
+    } else {
+      sidebar.classList.remove('collapsed');
+      sidebar.setAttribute('aria-expanded','true');
+      toggleIcon.classList.replace('fa-angle-right','fa-angle-left');
+      localStorage.setItem(collapsedKey,'false');
+    }
+  }
+
+  toggleBtn.addEventListener('click', ()=> {
+    const now = sidebar.classList.toggle('collapsed');
+    setCollapsed(now);
+  });
+
+  // keyboard support for toggle (Space/Enter)
+  toggleBtn.addEventListener('keydown', (e)=>{
+    if(e.key === 'Enter' || e.key === ' '){
+      e.preventDefault();
+      toggleBtn.click();
+    }
+  });
+
+  // Mobile overlay toggle for small screens
+  function showSidebarForMobile(show){
+    if(show){
+      document.body.classList.add('overlay');
+      sidebar.classList.add('show');
+    } else {
+      document.body.classList.remove('overlay');
+      sidebar.classList.remove('show');
+    }
+  }
+
+  // show button only on small screens
+  const mq = window.matchMedia('(max-width:900px)');
+  function handleMqChange(e){
+    if(e.matches){
+      mobileToggle.style.display = 'inline-grid';
+    } else {
+      mobileToggle.style.display = 'none';
+      showSidebarForMobile(false);
+    }
+  }
+  mq.addListener(handleMqChange);
+  handleMqChange(mq);
+
+  mobileToggle.addEventListener('click', ()=> showSidebarForMobile(true));
+
+  // close overlay when clicking outside sidebar
+  document.addEventListener('click', (ev)=>{
+    if(mq.matches){
+      if(!sidebar.contains(ev.target) && !mobileToggle.contains(ev.target)){
+        showSidebarForMobile(false);
+      }
+    }
+  });
+
+  // Example: simple keyboard navigation (Left to collapse, Right to expand)
+  document.addEventListener('keydown', (e)=>{
+    if(e.key === 'ArrowLeft') setCollapsed(true);
+    if(e.key === 'ArrowRight') setCollapsed(false);
+  });
+
+  // Keep active link highlighting when clicked
+  document.querySelectorAll('nav a').forEach(a=>{
+    a.addEventListener('click', (ev)=>{
+      document.querySelectorAll('nav a').forEach(x=>x.classList.remove('active'));
+      a.classList.add('active');
+      // On small screens close overlay after clicking
+      if(mq.matches) showSidebarForMobile(false);
+    });
+  });
+
+  // Accessibility: allow focusing on nav links and showing tooltip when collapsed
+  document.querySelectorAll('nav a').forEach(a=>{
+    a.setAttribute('tabindex','0');
+  });
+
+  // small enhancement: focus search input with "/" key
+  document.addEventListener('keydown', (e)=>{
+    if(e.key === '/' && document.activeElement.tagName.toLowerCase() !== 'input') {
+      e.preventDefault();
+      document.getElementById('searchInput').focus();
+    }
+  });
+
+</script>
+</body>
+</html>

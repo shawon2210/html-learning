@@ -1,0 +1,56 @@
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<style>
+                        /* div---formats */
+.grid-container {
+  display: grid;                  /* activates grid context */
+  grid-template-columns: 1fr 1fr; /* 2 equal columns */
+  gap: 10px;
+  background-color: #fafafa;
+  padding: 10px;
+}
+
+.box {
+  background-color: lightgreen;
+  border: 2px solid green;
+  padding: 20px;
+  text-align: center;
+}
+
+.parent {
+  position: relative;      /* creates positioning context */
+  width: 300px;
+  height: 200px;
+  background-color: lightgray;
+  border: 2px solid black;
+}
+
+.child {
+  position: absolute;       /* positioned relative to .parent */
+  top: 20px;
+  left: 30px;
+  background-color: orange;
+  padding: 10px;
+}
+
+</style>
+<body>
+   <div class="grid-container">
+  <div class="box">A</div>
+  <div class="box">B</div>
+  <div class="box">C</div>
+  <div class="box">D</div>
+</div> 
+
+<div class="parent">
+  <div class="child">I'm positioned absolutely</div>
+</div>
+
+</body>
+</html>
+
